@@ -92,5 +92,26 @@ app.registerExtension({
     const [oldWidth, oldHeight] = node.size
 
     node.setSize([Math.max(oldWidth, 300), Math.max(oldHeight, 520)])
+  },
+
+  setup() {
+    console.log("main setup--------");
+    const search: string = window.location.search; // "?foo=bar&baz=1"
+    const params: Record<string, string> = {};
+    if (search) {
+      search.slice(1).split('&').forEach(pair => {
+        const [key, value] = pair.split('=');
+        params[key] = decodeURIComponent(value || '');
+      });
+    }
+    // 打印工作流json文件名称
+    console.log("main setup params--------");
+    console.log(params.workFlowJson);
+
+    app.graph.clear();
+    app.graph.fromJSON(
+      String.raw`{"3":{"inputs":{"seed":582234404284254,"steps":30,"cfg":4,"sampler_name":"euler","scheduler":"normal","denoise":1,"model":["66",0],"positive":["6",0],"negative":["7",0],"latent_image":["58",0]},"class_type":"KSampler","_meta":{"title":"K采样器"}},"6":{"inputs":{"text":"3D通用风格,一块立体金色矩形卡片,四角带铆钉装饰,中央浮雕字体设计“发财”字样,表面光滑反光,白色背景","clip":["38",0]},"class_type":"CLIPTextEncode","_meta":{"title":"Positive Prompt"}},"7":{"inputs":{"text":"ng_deepnegative_v1_75t,(badhandv4:1.2),EasyNegative,(worst quality:2),","clip":["38",0]},"class_type":"CLIPTextEncode","_meta":{"title":"Negative Prompt"}},"8":{"inputs":{"samples":["3",0],"vae":["39",0]},"class_type":"VAEDecode","_meta":{"title":"VAE解码"}},"37":{"inputs":{"unet_name":"qwen_image_fp8_e4m3fn.safetensors","weight_dtype":"fp8_e4m3fn"},"class_type":"UNETLoader","_meta":{"title":"UNet加载器"}},"38":{"inputs":{"clip_name":"qwen_2.5_vl_7b_fp8_scaled.safetensors","type":"qwen_image","device":"default"},"class_type":"CLIPLoader","_meta":{"title":"加载CLIP"}},"39":{"inputs":{"vae_name":"qwen_image_vae.safetensors"},"class_type":"VAELoader","_meta":{"title":"加载VAE"}},"58":{"inputs":{"width":1024,"height":1024,"batch_size":1},"class_type":"EmptySD3LatentImage","_meta":{"title":"空Latent图像（SD3）"}},"60":{"inputs":{"filename_prefix":"ComfyUI","images":["8",0]},"class_type":"SaveImage","_meta":{"title":"保存图像"}},"66":{"inputs":{"shift":3.1000000000000005,"model":["89",0]},"class_type":"ModelSamplingAuraFlow","_meta":{"title":"采样算法（AuraFlow）"}},"89":{"inputs":{"lora_name":"01-Qwen\3D通用风格.safetensors","strength_model":0.8,"model":["37",0]},"class_type":"LoraLoaderModelOnly","_meta":{"title":"LoRA加载器（仅模型）"}}}`
+    );
+    app.canvas.draw(true, true);
   }
 })
